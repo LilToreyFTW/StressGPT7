@@ -2,27 +2,27 @@
   "version": 2,
   "builds": [
     {
-      "src": "dist/index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "dist/assets/server.js",
+      "src": "vercel_integration/start-final.js",
       "use": "@vercel/node",
       "config": {
         "maxDuration": 30,
         "memory": 1024
       }
+    },
+    {
+      "src": "vercel_integration/app.html",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "dist/assets/server.js",
+      "dest": "vercel_integration/start-final.js",
       "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     },
     {
       "src": "/(.*)",
-      "dest": "dist/index.html",
+      "dest": "vercel_integration/app.html",
       "methods": ["GET"]
     }
   ],
