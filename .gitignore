@@ -107,3 +107,5 @@ test-results.xml
 # Backup files
 *.bak
 *.backup
+
+.vercel

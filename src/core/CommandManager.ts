@@ -1,7 +1,7 @@
-import { createLogger } from '@/utils/logger.js'
-import type { StressGPT7Config } from '@/types/config.js'
+import { createLogger } from '../utils/logger.js'
+import type { StressGPT7Config } from '../types/config.js'
 import type { StateManager } from './StateManager.js'
-import type { Command, CommandResult } from '@/types/command.js'
+import type { Command, CommandResult } from '../types/command.js'
 
 export class CommandManager {
   private logger = createLogger('CommandManager')
