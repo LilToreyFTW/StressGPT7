@@ -740,9 +740,9 @@ console.log("Code generated based on your request.");`
       const imports = code.match(/import\s+(\w+)/g) || []
       dependencies.push(...imports.map(imp => imp.replace('import ', '')))
     } else if (language === 'nodejs' || language === 'javascript') {
-      const requireMatches = code.match(/require\(['"]([^'"]+)['"])/g) || []
+      const requireMatches = code.match(/require\(['"]([^'"]+)['"]\)/g) || []
       const extractedDeps = requireMatches.map(req => {
-        const match = req.match(/require\(['"]([^'"]+)['"])/)
+        const match = req.match(/require\(['"]([^'"]+)['"]\)/)
         return match ? match[1] : ''
       }).filter(dep => dep.length > 0)
       dependencies.push(...extractedDeps)
