@@ -1,0 +1,38 @@
+{
+  "name": "stressgpt7-vercel",
+  "version": "7.0.0",
+  "description": "StressGPT7 AI Assistant - Vercel Deployment",
+  "main": "start-final.js",
+  "type": "module",
+  "scripts": {
+    "start": "node start-final.js",
+    "build": "echo 'No build step required for Node.js server'",
+    "dev": "node start-final.js",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "ai",
+    "assistant",
+    "typescript",
+    "automation",
+    "software-engineering",
+    "vercel",
+    "serverless"
+  ],
+  "author": "StressGPT7 Team",
+  "license": "MIT",
+  "dependencies": {
+    "node": ">=18.0.0"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LilToreyFTW/StressGPT7.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LilToreyFTW/StressGPT7/issues"
+  },
+  "homepage": "https://github.com/LilToreyFTW/StressGPT7#readme"
+}
