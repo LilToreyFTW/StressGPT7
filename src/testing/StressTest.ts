@@ -370,6 +370,7 @@ export class StressTest {
           }
         }
       }
+    ]
 
     for (const test of errorTests) {
       await this.runTest(test.name, test.test, true) // Expect errors
