@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node start-final.js",
-    "build": "echo 'No build step required for Node.js server'",
+    "build": "node build.js",
     "dev": "node start-final.js",
     "deploy": "vercel --prod"
   },

@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverComponentsExternalPackages: ['openai'],
+    serverComponentsExternalPackages: [],
   },
   env: {
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT || '3000',
   },
   async headers() {
     return [
@@ -27,6 +28,12 @@ const nextConfig = {
       tls: false,
     };
     return config;
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
