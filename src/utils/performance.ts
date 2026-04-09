@@ -19,7 +19,7 @@ export class PerformanceMonitor {
     const metric: PerformanceMetrics = {
       operationName: name,
       startTime: performance.now(),
-      metadata
+      metadata: metadata || {}
     }
 
     this.activeOperations.set(operationId, metric)
@@ -73,18 +73,18 @@ export class PerformanceMonitor {
 
       if (!stats[metric.operationName]) {
         stats[metric.operationName] = {
-          count: 0,
-          avgDuration: 0,
+          count: 1,
+          avgDuration: metric.duration,
           minDuration: metric.duration,
           maxDuration: metric.duration
         }
+      } else {
+        const stat = stats[metric.operationName]
+        stat.count++
+        stat.avgDuration = ((stat.avgDuration * (stat.count - 1)) + metric.duration) / stat.count
+        stat.minDuration = Math.min(stat.minDuration, metric.duration)
+        stat.maxDuration = Math.max(stat.maxDuration, metric.duration)
       }
-
-      const stat = stats[metric.operationName]
-      stat.count++
-      stat.avgDuration = ((stat.avgDuration * (stat.count - 1)) + metric.duration) / stat.count
-      stat.minDuration = Math.min(stat.minDuration, metric.duration)
-      stat.maxDuration = Math.max(stat.maxDuration, metric.duration)
     }
 
     return stats

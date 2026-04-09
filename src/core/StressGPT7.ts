@@ -1,6 +1,5 @@
-import { Anthropic } from '@anthropic-ai/sdk'
-import { createLogger } from '@/utils/logger.js'
-import type { StressGPT7Config } from '@/types/config.js'
+import { createLogger } from '../utils/logger.js'
+import type { StressGPT7Config } from '../types/config.js'
 import { QueryEngine } from './QueryEngine.js'
 import { ToolManager } from './ToolManager.js'
 import { CommandManager } from './CommandManager.js'
@@ -8,11 +7,12 @@ import { PluginManager } from './PluginManager.js'
 import { SkillManager } from './SkillManager.js'
 import { MCPManager } from './MCPManager.js'
 import { StateManager } from './StateManager.js'
+import { LocalAIEngine } from './LocalAIEngine.js'
 
 export class StressGPT7 {
   private config: StressGPT7Config
   private logger = createLogger('StressGPT7')
-  private anthropic: Anthropic
+  private localAIEngine: LocalAIEngine
   private queryEngine: QueryEngine
   private toolManager: ToolManager
   private commandManager: CommandManager
@@ -24,13 +24,9 @@ export class StressGPT7 {
 
   constructor(config: StressGPT7Config) {
     this.config = config
+    this.logger.info('StressGPT7 initialized')
     
-    // Initialize Anthropic client
-    this.anthropic = new Anthropic({
-      apiKey: config.api.anthropic.apiKey,
-    })
-    
-    // Initialize core managers
+    // Initialize managers first
     this.stateManager = new StateManager(config)
     this.toolManager = new ToolManager(config, this.stateManager)
     this.commandManager = new CommandManager(config, this.stateManager)
@@ -38,10 +34,13 @@ export class StressGPT7 {
     this.skillManager = new SkillManager(config, this.stateManager)
     this.mcpManager = new MCPManager(config, this.stateManager)
     
+    // Initialize LocalAIEngine
+    this.localAIEngine = new LocalAIEngine(config, this.stateManager, this.toolManager)
+    
     // Initialize query engine
     this.queryEngine = new QueryEngine({
       config,
-      anthropic: this.anthropic,
+      localAIEngine: this.localAIEngine,
       toolManager: this.toolManager,
       commandManager: this.commandManager,
       pluginManager: this.pluginManager,

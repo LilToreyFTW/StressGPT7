@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StressGPT7 - Advanced AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #007acc;
+            --secondary: #3c3c3c;
+            --accent: #4ec9b0;
+            --background: #1e1e1e;
+            --surface: #252526;
+            --surface-hover: #2a2a2a;
+            --text: #d4d4d4;
+            --text-secondary: #9d9d9d;
+            --error: #f14c4c;
+            --warning: #ffcc02;
+            --success: #4ec9b0;
+            --border: #3e3e42;
+            --code-bg: #0e0e0e;
+            --code-text: #d4d4d4;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,122,204,0.3);
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tool-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .tool-item {
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid transparent;
+        }
+
+        .tool-item:hover {
+            background: var(--surface-hover);
+            border-color: var(--border);
+        }
+
+        .tool-item.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tool-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.75rem;
+            background: var(--surface);
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .tool-item.active .tool-icon {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--background);
+        }
+
+        .chat-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            font-size: 1.125rem;
+            font-weight: 500;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 1.25rem;
+            border-radius: 16px;
+            animation: slideIn 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-header {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .message-content {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .message-content code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+        }
+
+        .message-content pre {
+            background: var(--code-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+
+        .message-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .message-tools {
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text);
+        }
+
+        .btn-small:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .input-container {
+            padding: 1.5rem 2rem;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .input-box {
+            flex: 1;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text);
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            transition: all 0.2s;
+        }
+
+        .input-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0,122,204,0.2);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #0066cc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,122,204,0.3);
+        }
+
+        .btn-secondary {
+            background: var(--surface-hover);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--border);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+
+        .voice-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--error);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 10;
+        }
+
+        .voice-indicator.active {
+            display: flex;
+        }
+
+        .voice-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .voice-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+            animation: voicePulse 1s infinite;
+        }
+
+        @keyframes voicePulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .code-editor {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+            position: relative;
+        }
+
+        .code-editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-editor-title {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .code-editor-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--surface-hover);
+        }
+
+        .language-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .language-option {
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .language-option:hover {
+            border-color: var(--primary);
+            background: var(--surface-hover);
+        }
+
+        .language-option.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .stats-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .chat-messages {
+                padding: 1rem;
+            }
+            
+            .input-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">S7</div>
+            <span>StressGPT7</span>
+        </div>
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>AI Engine: Online</span>
+            </div>
+            <div class="status-item">
+                <span>Model: stressgpt7-local</span>
+            </div>
+            <div class="status-item">
+                <span id="sessionInfo">Session: Active</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">AI Assistant</div>
+                <ul class="tool-list">
+                    <li class="tool-item active" data-tool="chat">
+                        <span class="tool-icon">AI</span>
+                        <span>Chat</span>
+                    </li>
+                    <li class="tool-item" data-tool="code">
+                        <span class="tool-icon">CD</span>
+                        <span>Code Generation</span>
+                    </li>
+                    <li class="tool-item" data-tool="analyze">
+                        <span class="tool-icon">AN</span>
+                        <span>Code Analysis</span>
+                    </li>
+                    <li class="tool-item" data-tool="execute">
+                        <span class="tool-icon">EX</span>
+                        <span>Code Execution</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Languages</div>
+                <ul class="tool-list">
+                    <li class="tool-item" data-lang="python">
+                        <span class="tool-icon">PY</span>
+                        <span>Python</span>
+                    </li>
+                    <li class="tool-item" data-lang="java">
+                        <span class="tool-icon">JV</span>
+                        <span>Java</span>
+                    </li>
+                    <li class="tool-item" data-lang="c">
+                        <span class="tool-icon">C</span>
+                        <span>C</span>
+                    </li>
+                    <li class="tool-item" data-lang="cpp">
+                        <span class="tool-icon">C++</span>
+                        <span>C++</span>
+                    </li>
+                    <li class="tool-item" data-lang="csharp">
+                        <span class="tool-icon">C#</span>
+                        <span>C#</span>
+                    </li>
+                    <li class="tool-item" data-lang="javascript">
+                        <span class="tool-icon">JS</span>
+                        <span>JavaScript</span>
+                    </li>
+                    <li class="tool-item" data-lang="typescript">
+                        <span class="tool-icon">TS</span>
+                        <span>TypeScript</span>
+                    </li>
+                    <li class="tool-item" data-lang="nodejs">
+                        <span class="tool-icon">ND</span>
+                        <span>Node.js</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Tools</div>
+                <ul class="tool-list">
+                    <li class="tool-item" data-tool="voice">
+                        <span class="tool-icon">MIC</span>
+                        <span>Voice Input</span>
+                    </li>
+                    <li class="tool-item" data-tool="vim">
+                        <span class="tool-icon">VIM</span>
+                        <span>Vim Mode</span>
+                    </li>
+                    <li class="tool-item" data-tool="stats">
+                        <span class="tool-icon">ST</span>
+                        <span>Statistics</span>
+                    </li>
+                    <li class="tool-item" data-tool="settings">
+                        <span class="tool-icon">SET</span>
+                        <span>Settings</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-title" id="chatTitle">AI Assistant</div>
+                <div class="chat-actions">
+                    <button class="btn-icon" id="clearChat" title="Clear Chat">Clear</button>
+                    <button class="btn-icon" id="exportChat" title="Export Chat">Export</button>
+                    <button class="btn-icon" id="toggleSidebar" title="Toggle Sidebar">Menu</button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message assistant">
+                    <div class="message-header">StressGPT7 Assistant</div>
+                    <div class="message-content">
+                        Hello! I'm StressGPT7, your advanced AI assistant. I can help you with:
+
+                        <br><br>**Programming Languages:**
+                        <br>Python, Java, C, C++, C#, JavaScript, TypeScript, Node.js
+
+                        <br><br>**Capabilities:**
+                        <br>Code generation and analysis
+                        <br>Multi-language support
+                        <br>Code execution and testing
+                        <br>Debugging and optimization
+                        <br>Best practices and patterns
+
+                        <br><br>What would you like to work on today?
+                    </div>
+                    <div class="message-actions">
+                        <button class="btn-small" onclick="copyMessage(this)">Copy</button>
+                        <button class="btn-small" onclick="regenerateResponse(this)">Regenerate</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+                <span>Thinking...</span>
+            </div>
+
+            <div class="voice-indicator" id="voiceIndicator">
+                <div class="voice-dots">
+                    <div class="voice-dot"></div>
+                    <div class="voice-dot"></div>
+                    <div class="voice-dot"></div>
+                </div>
+                <span>Listening...</span>
+            </div>
+
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="messageInput" 
+                        class="input-box" 
+                        placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)"
+                        rows="1"
+                    ></textarea>
+                    <div class="input-actions">
+                        <button class="btn btn-secondary" id="voiceBtn">
+                            <span>mic</span>
+                            Voice
+                        </button>
+                        <button class="btn btn-primary" id="sendBtn">
+                            <span>send</span>
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Code Generation Modal -->
+    <div class="modal" id="codeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Code Generation</div>
+                <button class="modal-close" onclick="closeModal('codeModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="codePrompt">Describe what you want to create:</label>
+                    <textarea id="codePrompt" class="input-box" rows="4" placeholder="e.g., Create a Python function that calculates fibonacci numbers"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Programming Language:</label>
+                    <div class="language-selector" id="languageSelector">
+                        <div class="language-option" data-lang="python">Python</div>
+                        <div class="language-option" data-lang="java">Java</div>
+                        <div class="language-option" data-lang="c">C</div>
+                        <div class="language-option" data-lang="cpp">C++</div>
+                        <div class="language-option" data-lang="csharp">C#</div>
+                        <div class="language-option" data-lang="javascript">JavaScript</div>
+                        <div class="language-option" data-lang="typescript">TypeScript</div>
+                        <div class="language-option" data-lang="nodejs">Node.js</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="requirements">Requirements (optional):</label>
+                    <input type="text" id="requirements" class="input-box" placeholder="e.g., performance, security, testing">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeModal('codeModal')">Cancel</button>
+                    <button class="btn btn-primary" onclick="generateCode()">Generate Code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">System Statistics</div>
+                <button class="modal-close" onclick="closeModal('statsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="stats-panel">
+                    <div class="stats-grid" id="statsGrid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalRequests">0</div>
+                            <div class="stat-label">Total Requests</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="successRate">0%</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="avgResponseTime">0ms</div>
+                            <div class="stat-label">Avg Response Time</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="uptime">0s</div>
+                            <div class="stat-label">Uptime</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="refreshStats()">Refresh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class StressGPT7GUI {
+            constructor() {
+                this.apiBase = window.location.origin + '/api';
+                this.sessionId = this.generateSessionId();
+                this.selectedLanguage = 'python';
+                this.currentTool = 'chat';
+                this.isVoiceActive = false;
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupLanguageSelector();
+                this.loadStats();
+                this.focusInput();
+            }
+
+            setupEventListeners() {
+                // Input handling
+                const messageInput = document.getElementById('messageInput');
+                const sendBtn = document.getElementById('sendBtn');
+                const voiceBtn = document.getElementById('voiceBtn');
+
+                messageInput.addEventListener('input', () => this.autoResizeTextarea(messageInput));
+                messageInput.addEventListener('keydown', (e) => this.handleKeyDown(e));
+                sendBtn.addEventListener('click', () => this.sendMessage());
+                voiceBtn.addEventListener('click', () => this.toggleVoice());
+
+                // Tool selection
+                document.querySelectorAll('.tool-item[data-tool]').forEach(item => {
+                    item.addEventListener('click', () => this.selectTool(item.dataset.tool));
+                });
+
+                // Language selection
+                document.querySelectorAll('.tool-item[data-lang]').forEach(item => {
+                    item.addEventListener('click', () => this.selectLanguage(item.dataset.lang));
+                });
+
+                // Chat actions
+                document.getElementById('clearChat').addEventListener('click', () => this.clearChat());
+                document.getElementById('exportChat').addEventListener('click', () => this.exportChat());
+                document.getElementById('toggleSidebar').addEventListener('click', () => this.toggleSidebar());
+
+                // Health check
+                this.checkHealth();
+            }
+
+            setupLanguageSelector() {
+                document.querySelectorAll('.language-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('selected'));
+                        option.classList.add('selected');
+                        this.selectedLanguage = option.dataset.lang;
+                    });
+                });
+
+                // Select Python by default
+                document.querySelector('.language-option[data-lang="python"]').classList.add('selected');
+            }
+
+            handleKeyDown(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendMessage();
+                }
+            }
+
+            async sendMessage() {
+                const messageInput = document.getElementById('messageInput');
+                const message = messageInput.value.trim();
+                
+                if (!message) return;
+
+                // Add user message
+                this.addMessage('user', message);
+                
+                // Clear input
+                messageInput.value = '';
+                this.autoResizeTextarea(messageInput);
+
+                // Show typing indicator
+                this.showTypingIndicator();
+
+                try {
+                    const response = await this.makeAPIRequest('/chat', {
+                        message,
+                        sessionId: this.sessionId
+                    });
+
+                    this.hideTypingIndicator();
+                    
+                    if (response.response) {
+                        this.addMessage('assistant', response.response.content, response.response.type, response.response.metadata);
+                    } else {
+                        this.addMessage('assistant', 'Sorry, I encountered an error processing your request.', 'error');
+                    }
+                } catch (error) {
+                    this.hideTypingIndicator();
+                    this.addMessage('assistant', 'Error: Unable to connect to the server. Please check your connection.', 'error');
+                }
+            }
+
+            async generateCode() {
+                const prompt = document.getElementById('codePrompt').value.trim();
+                const requirements = document.getElementById('requirements').value.trim();
+                
+                if (!prompt) {
+                    alert('Please describe what you want to create');
+                    return;
+                }
+
+                const reqArray = requirements ? requirements.split(',').map(r => r.trim()) : [];
+
+                try {
+                    this.showTypingIndicator();
+                    this.closeModal('codeModal');
+
+                    const response = await this.makeAPIRequest('/code', {
+                        prompt,
+                        language: this.selectedLanguage,
+                        requirements: reqArray
+                    });
+
+                    this.hideTypingIndicator();
+
+                    if (response.success) {
+                        this.addMessage('assistant', response.code, 'code', {
+                            language: response.language,
+                            confidence: response.confidence
+                        });
+                    } else {
+                        this.addMessage('assistant', response.message || 'Failed to generate code', 'error');
+                    }
+                } catch (error) {
+                    this.hideTypingIndicator();
+                    this.addMessage('assistant', 'Error: Unable to generate code. Please try again.', 'error');
+                }
+            }
+
+            selectTool(tool) {
+                this.currentTool = tool;
+                
+                // Update UI
+                document.querySelectorAll('.tool-item[data-tool]').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`.tool-item[data-tool="${tool}"]`).classList.add('active');
+
+                // Update chat title
+                const titles = {
+                    chat: 'AI Assistant',
+                    code: 'Code Generation',
+                    analyze: 'Code Analysis',
+                    execute: 'Code Execution',
+                    voice: 'Voice Input',
+                    vim: 'Vim Mode',
+                    stats: 'Statistics',
+                    settings: 'Settings'
+                };
+
+                document.getElementById('chatTitle').textContent = titles[tool] || 'AI Assistant';
+
+                // Handle tool-specific actions
+                if (tool === 'code') {
+                    this.openModal('codeModal');
+                } else if (tool === 'stats') {
+                    this.openModal('statsModal');
+                    this.loadStats();
+                }
+            }
+
+            selectLanguage(lang) {
+                this.selectedLanguage = lang;
+                
+                // Update UI
+                document.querySelectorAll('.tool-item[data-lang]').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`.tool-item[data-lang="${lang}"]`).classList.add('active');
+            }
+
+            toggleVoice() {
+                this.isVoiceActive = !this.isVoiceActive;
+                const voiceBtn = document.getElementById('voiceBtn');
+                const voiceIndicator = document.getElementById('voiceIndicator');
+
+                if (this.isVoiceActive) {
+                    voiceBtn.innerHTML = '<span>mic_off</span>Stop';
+                    voiceIndicator.classList.add('active');
+                    
+                    // Simulate voice input
+                    setTimeout(() => {
+                        this.isVoiceActive = false;
+                        voiceBtn.innerHTML = '<span>mic</span>Voice';
+                        voiceIndicator.classList.remove('active');
+                        
+                        const messageInput = document.getElementById('messageInput');
+                        messageInput.value = "Voice input: Create a simple web server";
+                        messageInput.focus();
+                    }, 3000);
+                } else {
+                    voiceBtn.innerHTML = '<span>mic</span>Voice';
+                    voiceIndicator.classList.remove('active');
+                }
+            }
+
+            addMessage(type, content, messageType = 'text', metadata = null) {
+                const messagesContainer = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'message-header';
+                headerDiv.textContent = type === 'user' ? 'You' : 'StressGPT7 Assistant';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                
+                if (messageType === 'code') {
+                    contentDiv.innerHTML = this.formatCode(content);
+                } else {
+                    contentDiv.textContent = content;
+                }
+                
+                messageDiv.appendChild(headerDiv);
+                messageDiv.appendChild(contentDiv);
+
+                // Add metadata if available
+                if (metadata) {
+                    const toolsDiv = document.createElement('div');
+                    toolsDiv.className = 'message-tools';
+                    
+                    let metadataText = '';
+                    if (metadata.language) metadataText += `Language: ${metadata.language}`;
+                    if (metadata.confidence) metadataText += ` | Confidence: ${(metadata.confidence * 100).toFixed(1)}%`;
+                    if (metadata.toolsUsed) metadataText += ` | Tools: ${metadata.toolsUsed.join(', ')}`;
+                    
+                    toolsDiv.textContent = metadataText;
+                    messageDiv.appendChild(toolsDiv);
+                }
+
+                // Add action buttons
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'message-actions';
+                actionsDiv.innerHTML = `
+                    <button class="btn-small" onclick="copyMessage(this)">Copy</button>
+                    <button class="btn-small" onclick="regenerateResponse(this)">Regenerate</button>
+                `;
+                messageDiv.appendChild(actionsDiv);
+                
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            formatCode(code) {
+                // Simple code formatting - in production, use a proper syntax highlighter
+                return code.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+                    return `<pre><code class="language-${lang || 'text'}">${code}</code></pre>`;
+                }).replace(/`([^`]+)`/g, '<code>$1</code>');
+            }
+
+            showTypingIndicator() {
+                document.getElementById('typingIndicator').classList.add('active');
+                const messagesContainer = document.getElementById('chatMessages');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            hideTypingIndicator() {
+                document.getElementById('typingIndicator').classList.remove('active');
+            }
+
+            clearChat() {
+                if (confirm('Are you sure you want to clear the chat history?')) {
+                    const messagesContainer = document.getElementById('chatMessages');
+                    messagesContainer.innerHTML = `
+                        <div class="message assistant">
+                            <div class="message-header">StressGPT7 Assistant</div>
+                            <div class="message-content">Chat cleared. How can I help you today?</div>
+                        </div>
+                    `;
+                }
+            }
+
+            exportChat() {
+                const messages = document.querySelectorAll('.message');
+                let exportText = 'StressGPT7 Chat Export\n';
+                exportText += `Date: ${new Date().toLocaleString()}\n`;
+                exportText += `Session: ${this.sessionId}\n\n`;
+
+                messages.forEach(msg => {
+                    const isUser = msg.classList.contains('user');
+                    const header = msg.querySelector('.message-header').textContent;
+                    const content = msg.querySelector('.message-content').textContent;
+                    
+                    exportText += `${header}:\n${content}\n\n`;
+                });
+
+                const blob = new Blob([exportText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `stressgpt7-chat-${Date.now()}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            toggleSidebar() {
+                const sidebar = document.querySelector('.sidebar');
+                sidebar.style.display = sidebar.style.display === 'none' ? 'flex' : 'none';
+            }
+
+            openModal(modalId) {
+                document.getElementById(modalId).classList.add('active');
+            }
+
+            closeModal(modalId) {
+                document.getElementById(modalId).classList.remove('active');
+            }
+
+            async makeAPIRequest(endpoint, data) {
+                const response = await fetch(this.apiBase + endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            }
+
+            async checkHealth() {
+                try {
+                    const response = await fetch(this.apiBase + '/health');
+                    const health = await response.json();
+                    
+                    if (health.status === 'healthy') {
+                        document.getElementById('sessionInfo').textContent = `Session: Active (${this.sessionId.substring(0, 8)}...)`;
+                    } else {
+                        document.getElementById('sessionInfo').textContent = 'Session: Limited';
+                    }
+                } catch (error) {
+                    document.getElementById('sessionInfo').textContent = 'Session: Offline';
+                }
+            }
+
+            async loadStats() {
+                try {
+                    const response = await fetch(this.apiBase + '/stats');
+                    const stats = await response.json();
+                    
+                    document.getElementById('totalRequests').textContent = stats.totalRequests || 0;
+                    document.getElementById('successRate').textContent = `${stats.successRate || 0}%`;
+                    document.getElementById('avgResponseTime').textContent = `${stats.averageResponseTime || 0}ms`;
+                    document.getElementById('uptime').textContent = `${Math.floor(stats.uptime / 1000)}s`;
+                } catch (error) {
+                    console.error('Failed to load stats:', error);
+                }
+            }
+
+            refreshStats() {
+                this.loadStats();
+            }
+
+            autoResizeTextarea(textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            }
+
+            focusInput() {
+                document.getElementById('messageInput').focus();
+            }
+
+            generateSessionId() {
+                return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            }
+        }
+
+        // Global functions for button actions
+        function copyMessage(button) {
+            const message = button.closest('.message').querySelector('.message-content').textContent;
+            navigator.clipboard.writeText(message).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function regenerateResponse(button) {
+            // In a real implementation, this would regenerate the response
+            button.textContent = 'Regenerating...';
+            setTimeout(() => {
+                button.textContent = 'Regenerate';
+            }, 2000);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Initialize the GUI
+        const app = new StressGPT7GUI();
+
+        // Global function for code generation
+        window.generateCode = () => app.generateCode();
+        window.refreshStats = () => app.refreshStats();
+        window.closeModal = (modalId) => app.closeModal(modalId);
+    </script>
+</body>
+</html>

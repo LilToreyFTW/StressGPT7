@@ -1,4 +1,4 @@
-import type { StressGPT7Config } from '@/types/config.js'
+import type { StressGPT7Config } from '../types/config.js'
 import { createLogger } from './logger.js'
 
 const logger = createLogger('validation')
@@ -7,15 +7,13 @@ export function validateConfig(config: StressGPT7Config): { isValid: boolean; er
   const errors: string[] = []
 
   // Validate API configuration
-  if (!config.api.anthropic.apiKey) {
-    errors.push('ANTHROPIC_API_KEY is required')
-  }
-
-  if (config.api.anthropic.maxTokens < 1 || config.api.anthropic.maxTokens > 200000) {
+  // Local AI doesn't require API key, so no validation needed for that
+  
+  if (config.api.localAI.maxTokens < 1 || config.api.localAI.maxTokens > 200000) {
     errors.push('maxTokens must be between 1 and 200000')
   }
 
-  if (config.api.anthropic.temperature < 0 || config.api.anthropic.temperature > 2) {
+  if (config.api.localAI.temperature < 0 || config.api.localAI.temperature > 2) {
     errors.push('temperature must be between 0 and 2')
   }
 

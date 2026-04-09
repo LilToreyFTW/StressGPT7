@@ -58,13 +58,16 @@ export function encryptSensitiveData(data: string, key: string): string {
   const encrypted = Buffer.alloc(dataBytes.length)
   
   for (let i = 0; i < dataBytes.length; i++) {
-    encrypted[i] = dataBytes[i] ^ keyBytes[i % keyBytes.length]
+    encrypted[i] = dataBytes[i]! ^ keyBytes[i % keyBytes.length]
   }
   
   return encrypted.toString('base64')
 }
 
 export function decryptSensitiveData(encryptedData: string, key: string): string {
+  if (!encryptedData || !key) {
+    throw new Error('Encrypted data and key are required for decryption')
+  }
   // Simple XOR decryption for demonstration
   // In production, use proper encryption libraries
   const keyBytes = Buffer.from(key, 'utf8')
@@ -72,7 +75,7 @@ export function decryptSensitiveData(encryptedData: string, key: string): string
   const decrypted = Buffer.alloc(encrypted.length)
   
   for (let i = 0; i < encrypted.length; i++) {
-    decrypted[i] = encrypted[i] ^ keyBytes[i % keyBytes.length]
+    decrypted[i] = encrypted[i]! ^ keyBytes[i % keyBytes.length]
   }
   
   return decrypted.toString('utf8')
@@ -86,7 +89,7 @@ export function generateSecureRandom(min: number, max: number): number {
   
   let randomValue = 0
   for (let i = 0; i < bytesNeeded; i++) {
-    randomValue = randomValue * 256 + randomBytesBuffer[i]
+    randomValue = randomValue * 256 + randomBytesBuffer[i]!
   }
   
   return min + (randomValue % range)

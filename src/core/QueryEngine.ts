@@ -1,4 +1,3 @@
-import { Anthropic } from '@anthropic-ai/sdk'
 import type { Message } from '@/types/message.js'
 import { createLogger } from '@/utils/logger.js'
 import type { StressGPT7Config } from '@/types/config.js'
@@ -8,10 +7,11 @@ import type { PluginManager } from './PluginManager.js'
 import type { SkillManager } from './SkillManager.js'
 import type { MCPManager } from './MCPManager.js'
 import type { StateManager } from './StateManager.js'
+import { LocalAIEngine } from './LocalAIEngine.js'
 
 export interface QueryEngineContext {
   config: StressGPT7Config
-  anthropic: Anthropic
+  localAIEngine: LocalAIEngine
   toolManager: ToolManager
   commandManager: CommandManager
   pluginManager: PluginManager
@@ -59,26 +59,21 @@ export class QueryEngine {
       // Prepare messages for API
       const messages = this.prepareMessagesForAPI()
       
-      // Call Anthropic API
-      const response = await this.context.anthropic.messages.create({
-        model: this.context.config.api.anthropic.model,
-        max_tokens: options.maxTokens || this.context.config.api.anthropic.maxTokens,
-        temperature: options.temperature || this.context.config.api.anthropic.temperature,
-        system: systemPrompt,
-        messages,
-        tools: availableTools,
-        stream: options.stream || false,
-      })
+      // Call Local AI Engine
+      const response = await this.context.localAIEngine.processQuery(input)
 
       // Process response
-      let responseText = ''
-      for (const block of response.content) {
-        if (block.type === 'text') {
-          responseText += block.text
-        } else if (block.type === 'tool_use') {
-          // Handle tool use
-          const toolResult = await this.handleToolUse(block)
-          responseText += `\n[Tool: ${block.name}]\n${toolResult}`
+      let responseText = response.content
+      
+      // Handle any tools that were used
+      if (response.tools_used && response.tools_used.length > 0) {
+        for (const toolName of response.tools_used) {
+          try {
+            const toolResult = await this.context.localAIEngine.executeTool(toolName, {})
+            responseText += `\n[Tool: ${toolName}]\n${JSON.stringify(toolResult)}`
+          } catch (error) {
+            this.logger.warn(`Failed to execute tool ${toolName}:`, error)
+          }
         }
       }
 
@@ -133,7 +128,7 @@ ${pluginContext}
 ${mcpContext}`
   }
 
-  private prepareMessagesForAPI(): Anthropic.Messages.MessageParam[] {
+  private prepareMessagesForAPI(): any[] {
     return this.conversationHistory.map(msg => ({
       role: msg.type === 'user' ? 'user' : 'assistant',
       content: msg.content,

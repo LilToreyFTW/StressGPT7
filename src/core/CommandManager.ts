@@ -63,7 +63,7 @@ export class CommandManager {
 
   async executeCommand(input: string): Promise<CommandResult> {
     const [commandName, ...args] = input.slice(1).split(' ') // Remove the leading '/'
-    const command = this.commands.get(commandName)
+    const command = this.commands.get(commandName!)
 
     if (!command) {
       return {

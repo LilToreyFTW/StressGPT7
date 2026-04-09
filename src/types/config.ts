@@ -1,12 +1,10 @@
-export interface AnthropicAPIConfig {
-  apiKey: string
-  model: string
-  maxTokens: number
-  temperature: number
-}
-
 export interface APIConfig {
-  anthropic: AnthropicAPIConfig
+  localAI: {
+    model: string
+    maxTokens: number
+    temperature: number
+    reasoningDepth: number
+  }
 }
 
 export interface SystemConfig {

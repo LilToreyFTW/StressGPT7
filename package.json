@@ -6,8 +6,8 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc && bun build src/index.ts --outdir dist --target node --format esm",
-    "dev": "bun run src/index.ts",
+    "build": "tsc",
+    "dev": "node --loader ts-node/esm src/index.ts",
     "start": "node dist/index.js",
     "test": "bun test",
     "lint": "eslint src --ext .ts,.tsx",
@@ -24,26 +24,27 @@
   "author": "StressGPT7 Team",
   "license": "MIT",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.24.3",
     "@commander-js/extra-typings": "^12.1.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "chalk": "^5.3.0",
     "lodash-es": "^4.17.21",
     "react": "^18.3.1",
-    "zod": "^3.23.8",
     "strip-ansi": "^7.1.0",
-    "random-uuid": "^0.3.3"
+    "ts-node": "^10.9.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.14.9",
+    "@rollup/plugin-alias": "^6.0.0",
     "@types/lodash-es": "^4.17.12",
+    "@types/node": "^20.14.9",
     "@types/react": "^18.3.3",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
+    "bun-types": "^1.1.18",
     "eslint": "^8.57.0",
     "prettier": "^3.3.2",
-    "typescript": "^5.5.3",
-    "bun-types": "^1.1.18"
+    "rollup": "^4.60.1",
+    "typescript": "^5.5.3"
   },
   "engines": {
     "node": ">=20.0.0",
