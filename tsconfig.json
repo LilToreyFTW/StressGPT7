@@ -18,6 +18,16 @@
     "types": ["node"],
     "lib": ["ES2022"],
     "paths": {
+      "@/*": ["./*"],
+      "@/components/*": ["components/*"],
+      "@/utils/*": ["utils/*"],
+      "@/services/*": ["services/*"],
+      "@/tools/*": ["tools/*"],
+      "@/types/*": ["types/*"],
+      "@/commands/*": ["commands/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/state/*": ["state/*"],
+      "@/core/*": ["core/*"],
       "./components/*": ["components/*"],
       "./utils/*": ["utils/*"],
       "./services/*": ["services/*"],
@@ -25,7 +35,8 @@
       "./types/*": ["types/*"],
       "./commands/*": ["commands/*"],
       "./hooks/*": ["hooks/*"],
-      "./state/*": ["state/*"]
+      "./state/*": ["state/*"],
+      "./core/*": ["core/*"]
     }
   },
   "include": [
