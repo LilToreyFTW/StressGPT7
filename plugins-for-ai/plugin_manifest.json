@@ -1,0 +1,107 @@
+{
+  "version": "1.0.0",
+  "name": "StressGPT7 Plugin System",
+  "description": "Plugin system for StressGPT7 AI assistant",
+  "plugins": [
+    {
+      "name": "demon-ai-assistant",
+      "version": "1.0.0",
+      "type": "ai-assistant",
+      "description": "Demon AI Assistant with Vercel integration",
+      "main": "index.js",
+      "enabled": true,
+      "dependencies": ["openai", "anthropic", "requests"],
+      "capabilities": [
+        "chat-interface",
+        "ai-integration",
+        "development-tools",
+        "project-management",
+        "typescript-support"
+      ]
+    },
+    {
+      "name": "demon-tools",
+      "version": "1.0.0",
+      "type": "tools",
+      "description": "11 development tools for Demon AI",
+      "main": "index.js",
+      "enabled": true,
+      "dependencies": ["requests", "pathlib"],
+      "tools": [
+        "FetchFromWeb",
+        "GrepRepo",
+        "LSRepo",
+        "ReadFile",
+        "InspectSite",
+        "SearchWeb",
+        "TodoManager",
+        "SearchRepo",
+        "GenerateDesignInspiration",
+        "GetOrRequestIntegration"
+      ]
+    },
+    {
+      "name": "project-manager",
+      "version": "1.0.0",
+      "type": "project-management",
+      "description": "Project management and file operations",
+      "main": "index.js",
+      "enabled": true,
+      "dependencies": ["pathlib", "subprocess"],
+      "capabilities": [
+        "create-projects",
+        "file-operations",
+        "command-execution"
+      ]
+    },
+    {
+      "name": "search-assistant",
+      "version": "1.0.0",
+      "type": "search",
+      "description": "Advanced search assistant with comprehensive formatting and citation capabilities",
+      "main": "index.js",
+      "enabled": true,
+      "dependencies": [],
+      "capabilities": [
+        "comprehensive-search",
+        "advanced-formatting",
+        "citation-management",
+        "query-type-detection",
+        "academic-research",
+        "news-summarization",
+        "coding-assistance",
+        "recipe-generation",
+        "translation-services",
+        "creative-writing",
+        "science-math",
+        "url-lookup"
+      ]
+    },
+    {
+      "name": "demon-browser",
+      "version": "1.0.0",
+      "type": "ai-chat",
+      "description": "Advanced AI chat product with comprehensive formatting, hyperlinks, images, and videos",
+      "main": "index.js",
+      "enabled": true,
+      "dependencies": [],
+      "capabilities": [
+        "ai-chat-interface",
+        "ask-demon-hyperlinks",
+        "simple-answers",
+        "medemon-images",
+        "video-support",
+        "latex-equations",
+        "writing-assistance",
+        "conversational-ai",
+        "markdown-formatting",
+        "context-aware-responses"
+      ]
+    }
+  ],
+  "configuration": {
+    "auto_load": true,
+    "plugin_directory": "./plugins-for-ai",
+    "manifest_update_interval": 3600000
+  }
+}

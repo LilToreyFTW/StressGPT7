@@ -2,17 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/gui/app.html",
-      "use": "@vercel/static",
+      "src": "deploy-with-plugins.js",
+      "use": "@vercel/node",
       "config": {
-        "maxDuration": 30
+        "maxDuration": 30,
+        "memory": 1024
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/src/gui/app.html",
+      "dest": "deploy-with-plugins.js",
       "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     }
   ],
